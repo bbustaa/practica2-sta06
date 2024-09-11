@@ -1,38 +1,25 @@
-// API key que obtuviste en OMDb
-const apiKey = 'dd6c6a4';
+document.getElementById('buscar').addEventListener('click', function() {
+    let titulo = document.getElementById('titulo').value;
+    let apiKey = "dd6c6a4";  // Reemplaza con tu clave API
+    let url = `https://www.omdbapi.com/?t=${titulo}&apikey=${apiKey}`;
 
-// Capturar los elementos de HTML
-const searchButton = document.getElementById('searchButton');
-const movieTitleInput = document.getElementById('movieTitle');
-const movieInfo = document.getElementById('movieInfo');
-
-// Evento al hacer clic en el botón
-searchButton.addEventListener('click', () => {
-    const movieTitle = movieTitleInput.value;
-    
-    // Verificar que el campo no esté vacío
-    if (movieTitle) {
-        // URL para la API de OMDb con el título de la película
-        const apiUrl = `https://www.omdbapi.com/?t=${movieTitle}&apikey=${apiKey}`;
-        
-        // Hacer la solicitud a la API
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                // Verificar si se ha encontrado la película
-                if (data.Response === 'True') {
-                    const director = data.Director;
-                    const year = data.Year;
-                    movieInfo.innerHTML = `<p>Director: ${director}</p><p>Año: ${year}</p>`;
-                } else {
-                    movieInfo.innerHTML = `<p>Película no encontrada.</p>`;
-                }
-            })
-            .catch(error => {
-                console.error('Error al hacer la solicitud a la API:', error);
-                movieInfo.innerHTML = `<p>Error al buscar la película.</p>`;
-            });
-    } else {
-        movieInfo.innerHTML = `<p>Por favor, introduce un título.</p>`;
-    }
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.Response === "True") {
+                // Mostrar información de la película
+                document.getElementById('resultado').innerHTML = `
+                    <p>Director: ${data.Director}</p>
+                    <p>Año: ${data.Year}</p>
+                `;
+            } else {
+                // Mostrar mensaje de error
+                document.getElementById('resultado').innerHTML = `<p>${data.Error}</p>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('resultado').innerHTML = `<p>Error al buscar la película.</p>`;
+        });
 });
+
